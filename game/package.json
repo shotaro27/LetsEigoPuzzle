@@ -1,0 +1,16 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server3.js",
+  "scripts": {
+    "test": "node server3.js",
+    "start": "node server3.js"
+  },
+  "author": "hiranoshotaro@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "serialport": "^7.0.2",
+    "socket.io": "^2.1.1"
+  }
+}
