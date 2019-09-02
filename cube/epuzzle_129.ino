@@ -19,7 +19,7 @@ decode_results results;
 #define MAGENTA 0xF81F
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
-unsigned int COLORS[] = {BLACK, BLUE, RED, GREEN, CYAN, MAGENTA, YELLOW};
+unsigned int COLORS[] = {RED, BLUE, GREEN, CYAN, MAGENTA, YELLOW, BLACK};
 
 #define SCL_PIN  5
 #define SCL_PORT PORTB
@@ -97,61 +97,27 @@ bool isrepeat = false;
 void loop() {
   if (irrecv.decode(&results)) {
     if (results.decode_type == SONY) {
-      if (results.value == '$') {
-        bool timeout = true;
-        long nowtime = millis();
-        while ((!(irrecv.decode(&results)) || results.decode_type != SONY) && timeout) {
-          if (millis() - nowtime > 50) {
-            isrepeat = true;
-            irsend.sendSony('$', 12);
-            delay(40);
-            irsend.sendSony('!', 12);
-            irrecv.enableIRIn();
-            timeout = false;
-          }
-        }
-        code = results.value;
-        if (results.decode_type == SONY && ((code >= 65 && code <= 91) || code == 0x23 || code == 0x21)) {
-          if (code == 0x21) {
-            if (isrepeat) {
-              irsend.sendSony('$', 12);
-              delay(40);
-              irsend.sendSony('!', 12);
-              irrecv.enableIRIn();
-            } else {
-              irsend.sendSony('$', 12);
-              delay(40);
-              irsend.sendSony(sir, 12);
-              irrecv.enableIRIn();
-            }
-          } else if (code == 0x23) {
-            irsend.sendSony('$', 12);
-            delay(40);
-            irsend.sendSony(sir, 12);
-            irrecv.enableIRIn();
-            irrecv.resume();
-          } else {
-            isrepeat = false;
-            Serial.print("Read: ");
-            Serial.println(code);
-            displayed(code);
-            sir = code;
-          }
-        }
-      } else {
-        code = results.value;
-        if (code == 0x23) {
-          irsend.sendSony('$', 12);
-          delay(40);
-          irsend.sendSony(sir, 12);
-          irrecv.enableIRIn();
-          irrecv.resume();
-        } else {
-          Serial.print("Read: ");
-          Serial.println(code);
-          displayed(code);
-          sir = code;
-        }
+      code = results.value;
+      if (code == '?') {
+        delay(40);
+        irsend.sendSony(sir, 12);
+        irrecv.enableIRIn();
+        irrecv.resume();
+      } else if (code >= '!' && code <= ';') {
+        Serial.print("Read: ");
+        Serial.println(code);
+        displayed(code, 0);
+        sir = code;
+      } else if (code >= 'A' && code <= '[') {
+        Serial.print("Read: ");
+        Serial.println(code);
+        displayed(code, 1);
+        sir = code;
+      } else if (code >= 'a' && code <= '{') {
+        Serial.print("Read: ");
+        Serial.println(code);
+        displayed(code, 2);
+        sir = code;
       }
     }
     irrecv.resume();
@@ -163,15 +129,10 @@ byte readbyte(unsigned long address)  {
   uint8_t   dddr = (uint8_t)ADDRESS | (uint8_t)(address >> 16);
   uint16_t  addr = address & 0xFFFF;
   byte data = 0xFF;
-  //  Serial.print("２");
   Wire.beginTransmission(dddr);
-  //  Serial.print("２-1");
   Wire.write((byte)(addr >> 8));
-  //  Serial.print("２-2");
   Wire.write((byte)(addr & 0xFF));
-  //  Serial.print("２-3");
   Wire.endTransmission();
-  //  Serial.print("３");
   Wire.requestFrom(dddr, (uint8_t)1);
   data = Wire.read();
   return data;
@@ -186,26 +147,28 @@ word readData(byte index, int offset) {
   return read2byte((unsigned long)idx[ad] * 2 + offset * 2);
 }
 
-void displayed(byte data) {
-  tft.fillScreen(COLORS[random(0, 8)]);
+void displayed(byte data, byte color) {
+  tft.fillScreen(COLORS[color]);
   int index = 0;
   unsigned int t = 0;
   bool c = false;
-  unsigned int data2byte = readData(data, index) + 10;
+  unsigned int data2byte = readData(data + 32 - (color * 32), index);
   Serial.print(data2byte);
   for (int i = 0; i < 480; i++) {
     for (int j = 0; j < 320; j++) {
       //Serial.print(t);
+      t++;
+      if (c) {
+        tft.drawFastHLine(320 - j - data2byte, i, data2byte, WHITE);
+        j += data2byte - 1;
+        t = data2byte;
+      }
       if (t == data2byte) {
         index++;
         c = !c;
         t = 0;
-        data2byte = readData(data, index);
+        data2byte = readData(data + 32 - (color * 32), index);
       }
-      if (c) {
-        tft.drawPixel(320 - j, i, WHITE);
-      }
-      t++;
     }
   }
 }

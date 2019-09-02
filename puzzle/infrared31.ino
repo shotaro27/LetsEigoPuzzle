@@ -57,6 +57,9 @@ void setup() {
   pinMode(3, INPUT);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
+  pinMode(12, INPUT);
+  pinMode(9, OUTPUT);
+  //Serial.write("serial test");
 }
 
 char rser[4] = {0, 0, 0, 0};
@@ -64,6 +67,7 @@ char sir;
 bool isrepeat = false;
 bool s = true;
 bool s2 = true;
+bool s3 = true;
 int portno;
 
 void loop() {
@@ -77,23 +81,12 @@ void loop() {
     rser[1] = Serial.read();
     rser[2] = Serial.read();
     rser[3] = Serial.read();
-    //    Serial.print("1: ");
-    //    Serial.print(rser[1]);
-    //    Serial.print(" 2: ");
-    //    Serial.print(rser[2]);
-    //    Serial.print(" 3: ");
-    //    Serial.println(rser[3]);
     for (int p = 0; p < 16; p++) {
       mcp.digitalWrite(p, LOW);
     }
-    //    Serial.print((int)rser[1]);
     portno = ((int)rser[1] - 48) * 10 + ((int)rser[2] - 48);
-    //    Serial.print(portno);
     mcp.digitalWrite(portno, HIGH);
     sir = rser[3];
-    //    Serial.print("Write: ");
-    //    Serial.println(rser);
-    irsend.sendSony('$', 12);
     delay(40);
     irsend.sendSony(sir, 12);
     irrecv.enableIRIn();
@@ -129,68 +122,47 @@ void loop() {
       s2 = true;
     }
   }
+  if (digitalRead(12) == LOW) {
+    delay(1);
+    if (digitalRead(12) == LOW && s3) {
+      digitalWrite(9, HIGH);
+      Serial.print('e');
+      s3 = false;
+    }
+  } else {
+    delay(1);
+    if (digitalRead(12) == HIGH && (!s3)) {
+      digitalWrite(9, LOW);
+      Serial.print('f');
+      s3 = true;
+    }
+  }
 }
-
+bool timeout;
+long nowtime;
 void stateRead (int puzzleport) {
   for (int p = 0; p < 16; p++) {
     mcp.digitalWrite(p, LOW);
   }
   mcp.digitalWrite(puzzleport + 8, HIGH);
-  irsend.sendSony('$', 12);
   delay(40);
-  irsend.sendSony('#', 12);
+  irsend.sendSony('?', 12);
   irrecv.enableIRIn();
   irrecv.blink13(true);
-  bool timeout = true;
-  long nowtime = millis();
+  timeout = true;
+  nowtime = millis();
   while ((!(irrecv.decode(&results)) || results.decode_type != SONY) && timeout) {
+    if (Serial.available() > 0) {
+      return;
+    }
     if (millis() - nowtime > 200) {
       timeout = false;
-      Serial.print('0');
+      delay(10);
+      stateRead(puzzleport);
+      return;
     }
   }
-  if (irrecv.decode(&results)) {
-    if (results.decode_type == SONY) {
-      if (results.value == 0x24) {
-        timeout = true;
-        nowtime = millis();
-        irrecv.resume();
-        while ((!(irrecv.decode(&results)) || results.decode_type != SONY) && timeout) {
-          if (millis() - nowtime > 400) {
-            isrepeat = true;
-            irsend.sendSony('$', 12);
-            delay(40);
-            irsend.sendSony('!', 12);
-            irrecv.enableIRIn();
-            irrecv.blink13(true);
-            timeout = false;
-          }
-        }
-        if (results.decode_type == SONY && results.value != 0x24) {
-          if (results.value == 0x21) {
-            if (isrepeat) {
-              irsend.sendSony('$', 12);
-              delay(40);
-              irsend.sendSony('!', 12);
-              irrecv.enableIRIn();
-              irrecv.blink13(true);
-            } else {
-              irsend.sendSony('$', 12);
-              delay(40);
-              irsend.sendSony(sir, 12);
-              irrecv.enableIRIn();
-              irrecv.blink13(true);
-            }
-          } else {
-            isrepeat = false;
-            Serial.print((char)results.value);
-          }
-        }
-      } else {
-        Serial.print((char)results.value);
-      }
-    }
-    irrecv.resume();
-  }
+  Serial.print((char)(results.value % 32 + 64));
+  irrecv.resume();
 }
 
