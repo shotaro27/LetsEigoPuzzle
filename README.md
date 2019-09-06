@@ -45,3 +45,10 @@
 - 音声はProject Shtookaのものを使わせていただきました。　[Shtooka](http://swac-collections.org/download.php)
 - 画像はイラストレインのものを使わせていただきました。　[イラストレイン](https://illustrain.com/)
 - 音楽の卵　フリー音楽素材　BGMに使用しました。　[音楽の卵](http://ontama-m.com/ongaku_kawaii.html)
+
+##補足説明資料
+- [補足説明](https://github.com/shotaro27/LetsEigoPuzzle/blob/master/letseigo.pdf)
+- [ノート](https://github.com/shotaro27/LetsEigoPuzzle/blob/master/eigonote.pdf)
+
+##URL
+- [ver.4](https://www.youtube.com/watch?v=NaKyxNWOZd4)
