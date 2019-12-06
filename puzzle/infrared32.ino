@@ -69,6 +69,7 @@ bool s = true;
 bool s2 = true;
 bool s3 = true;
 int portno;
+bool iswrite = false;
 
 void loop() {
   rser[0] = Serial.read();
@@ -87,10 +88,8 @@ void loop() {
     portno = ((int)rser[1] - 48) * 10 + ((int)rser[2] - 48);
     mcp.digitalWrite(portno, HIGH);
     sir = rser[3];
-    delay(40);
-    irsend.sendSony(sir, 12);
-    irrecv.enableIRIn();
-    irrecv.blink13(true);
+    iswrite = true;
+    stateWrite(portno, sir);
   }
   if (digitalRead(2) == LOW) {
     delay(1);
@@ -140,7 +139,8 @@ void loop() {
 }
 bool timeout;
 long nowtime;
-void stateRead (int puzzleport) {
+long outtime = 0;
+char stateRead (int puzzleport) {
   for (int p = 0; p < 16; p++) {
     mcp.digitalWrite(p, LOW);
   }
@@ -165,4 +165,45 @@ void stateRead (int puzzleport) {
   Serial.print((char)(results.value % 32 + 64));
   irrecv.resume();
 }
-
+void stateWrite (int puzzleport, char code) {
+  for (int p = 0; p < 16; p++) {
+    mcp.digitalWrite(p, LOW);
+  }
+  mcp.digitalWrite(puzzleport + 8, HIGH);
+  delay(40);
+  irsend.sendSony(code, 12);
+  irrecv.enableIRIn();
+  irrecv.blink13(true);
+  timeout = true;
+  nowtime = millis();
+  while ((!(irrecv.decode(&results)) || results.decode_type != SONY) && timeout) {
+    if (Serial.available() > 0) {
+      Serial.print('1');
+      return;
+    }
+    if (millis() - nowtime > 200) {
+      timeout = false;
+      delay(10);
+      outtime++;
+      if (outtime == 5) {
+        Serial.print('2');
+        return;
+      }
+      stateWrite(puzzleport, code);
+      return;
+    }
+  }
+  outtime = 0;
+  if (results.value == code) {
+    if (code != '=') {
+      stateWrite(puzzleport, '=');
+    } else {
+      if (iswrite) {
+        Serial.print('=');
+        iswrite = false;
+      }
+    }
+  } else {
+    stateWrite(puzzleport, code);
+  }
+}

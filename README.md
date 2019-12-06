@@ -23,8 +23,8 @@
 3. node.jsをインストール
 4. `npm install`コマンドで必要なライブラリを`game`内にインストール
 5. enchant.jsを公式サイトからダウンロードして、`enchant.js`ファイルを`game`フォルダに入れる
-6. `puzzle`フォルダ内の`infrared31`をパズル台に入れる
-7. `cube`フォルダ内の`epuzzle_129`をキューブに入れる（メモリにデータが書き込まれている前提）
+6. `puzzle`フォルダ内の`infrared32`をパズル台に入れる
+7. `cube`フォルダ内の`epuzzle_133`をキューブに入れる（メモリにデータが書き込まれている前提）
 
 ## 実行方法
 
@@ -47,8 +47,11 @@
 - 音楽の卵　フリー音楽素材　BGMに使用しました。　[音楽の卵](http://ontama-m.com/ongaku_kawaii.html)
 
 ##補足説明資料
+
 - [補足説明](https://github.com/shotaro27/LetsEigoPuzzle/blob/master/letseigo.pdf)
 - [ノート](https://github.com/shotaro27/LetsEigoPuzzle/blob/master/eigonote.pdf)
 
 ##URL
-- [ver.4](https://www.youtube.com/watch?v=NaKyxNWOZd4)
+
+- [ver.4](https://youtu.be/NaKyxNWOZd4)
+- [ver.4.1](https://youtu.be/6gHKgkAUkWE)

@@ -93,7 +93,7 @@ void setup() {
 
 char code, sir;
 bool isrepeat = false;
-
+byte col;
 void loop() {
   if (irrecv.decode(&results)) {
     if (results.decode_type == SONY) {
@@ -103,21 +103,47 @@ void loop() {
         irsend.sendSony(sir, 12);
         irrecv.enableIRIn();
         irrecv.resume();
+      } else if (code == '=') {
+        for (int i = 0; i < 5; i++) {
+          delay(40);
+          irsend.sendSony('=', 12);
+          irrecv.enableIRIn();
+          irrecv.resume();
+        }
+        if (isrepeat) {
+          isrepeat = false;
+          displayed(sir, col);
+        }
       } else if (code >= '!' && code <= ';') {
         Serial.print("Read: ");
         Serial.println(code);
-        displayed(code, 0);
+        col = 0;
         sir = code;
+        isrepeat = true;
+        delay(40);
+        irsend.sendSony(sir, 12);
+        irrecv.enableIRIn();
+        irrecv.resume();
       } else if (code >= 'A' && code <= '[') {
         Serial.print("Read: ");
         Serial.println(code);
-        displayed(code, 1);
+        col = 1;
         sir = code;
+        isrepeat = true;
+        delay(40);
+        irsend.sendSony(sir, 12);
+        irrecv.enableIRIn();
+        irrecv.resume();
       } else if (code >= 'a' && code <= '{') {
         Serial.print("Read: ");
         Serial.println(code);
-        displayed(code, 2);
+        col = 2;
         sir = code;
+        isrepeat = true;
+        delay(40);
+        irsend.sendSony(sir, 12);
+        irrecv.enableIRIn();
+        irrecv.resume();
       }
     }
     irrecv.resume();

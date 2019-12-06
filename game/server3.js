@@ -2,14 +2,14 @@ var urlParser = require('url'),
 	handler = function(req, res) {
 		var urlParsed = urlParser.parse(req.url),
 			filepath = "";
-		console.log(urlParsed);
+		console.log(urlParsed.pathname);
 		
 		switch (urlParsed.pathname) {
 		case "/enchant.js":
 			filepath += "/enchant.js";
 			break;
 		case "/test.js":
-			filepath += "/mainC3.js";
+			filepath += "/mainC5.js";
 			break;
 		case "/favicon.ico":
 			filepath += "/favicon.ico";
@@ -127,6 +127,33 @@ var urlParser = require('url'),
 			break;
 		case "/complete.png":
 			filepath += "/complete.png";
+			break;
+		case "/load.png":
+			filepath += "/load.png";
+			break;
+		case "/loadrobo.png":
+			filepath += "/loadrobo.png";
+			break;
+		case "/loadsea.png":
+			filepath += "/loadsea.png";
+			break;
+		case "/loadingrobo.png":
+			filepath += "/loadingrobo.png";
+			break;
+		case "/loadisland.png":
+			filepath += "/loadisland.png";
+			break;
+		case "/loadships.png":
+			filepath += "/loadships.png";
+			break;
+		case "/loadsky.png":
+			filepath += "/loadsky.png";
+			break;
+		case "/selectsea.png":
+			filepath += "/selectsea.png";
+			break;
+		case "/selectsky.png":
+			filepath += "/selectsky.png";
 			break;
 		case "/cat.mp3":
 			filepath += "/En-us-cat.mp3";
