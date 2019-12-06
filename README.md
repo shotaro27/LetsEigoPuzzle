@@ -35,7 +35,7 @@
 
 |   ソフトウェア  |  バージョン  |
 |:--------------|:---------------|
-| Google Chrome | v69.0.3497.100 |
+| Google Chrome | v78.0.3904.108 |
 | ArduinoIDE    | v1.8.5         |
 | node.js       | v9.4.0         |
 | enchant.js    | v0.8.3         |
