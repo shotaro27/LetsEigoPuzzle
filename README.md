@@ -46,12 +46,12 @@
 - 画像はイラストレインのものを使わせていただきました。　[イラストレイン](https://illustrain.com/)
 - 音楽の卵　フリー音楽素材　BGMに使用しました。　[音楽の卵](http://ontama-m.com/ongaku_kawaii.html)
 
-##補足説明資料
+## 補足説明資料
 
 - [補足説明](https://github.com/shotaro27/LetsEigoPuzzle/blob/master/letseigo.pdf)
 - [ノート](https://github.com/shotaro27/LetsEigoPuzzle/blob/master/eigonote.pdf)
 
-##URL
+## URL
 
 - [ver.4](https://youtu.be/NaKyxNWOZd4)
 - [ver.4.1](https://youtu.be/6gHKgkAUkWE)
