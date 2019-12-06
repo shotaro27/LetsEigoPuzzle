@@ -3,11 +3,11 @@
 ## 内容
 
 1. `game`フォルダ
-	- サーバーの`server3.js`とゲーム部分の`mainC3.js`があり、ゲームに使う画像や音が入っています。
+	- サーバーの`server3.js`とゲーム部分の`mainC5.js`があり、ゲームに使う画像や音が入っています。
 2. `puzzle`フォルダ
-    - パズル台のプログラム`infrared31.ino`が入っています。
+    - パズル台のプログラム`infrared32.ino`が入っています。
 3. `cube`フォルダ
-    - パズル台のプログラム`epuzzle_129.ino`と、メモリ書き込み用の`abcwrite_beta.ino`が入っています。
+    - パズル台のプログラム`epuzzle_133.ino`と、メモリ書き込み用の`abcwrite_beta.ino`が入っています。
 4. `boarddefs.h`
     - [Arduino-IRremote](https://github.com/z3t0/Arduino-IRremote)ライブラリのなかの`boarddefs.h`を改造して、10番ピンを使えるようにしたものです。
 
